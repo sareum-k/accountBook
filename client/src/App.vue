@@ -2,7 +2,7 @@
 
 <template>
   <div>
-    <div class="text-red-400 font-bold">hello!!!</div>
+    <div class="text-red-400 underline">hello!!!</div>
   </div>
 </template>
 
