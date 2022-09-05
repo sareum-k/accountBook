@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import HeaderNavbar from './components/layout/HeaderNavbar.vue'
+
 // import gql from 'graphql-tag'
 // import { useQuery } from '@vue/apollo-composable'
 
@@ -25,9 +27,7 @@
 </script>
 
 <template>
-  <div>
-    <div class="text-green-500 underline">hello!!!</div>
-  </div>
+  <HeaderNavbar />
 </template>
 
 <style scoped></style>
