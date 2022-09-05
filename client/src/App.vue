@@ -26,7 +26,7 @@
 
 <template>
   <div>
-    <div class="text-red-400 underline">hello!!!</div>
+    <div class="text-green-500 underline">hello!!!</div>
   </div>
 </template>
 
