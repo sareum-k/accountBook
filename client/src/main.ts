@@ -8,7 +8,6 @@ import router from './router/router'
 const apolloClient = new ApolloClient({
   cache: new InMemoryCache(),
   uri: 'http://localhost:5173',
-  // uri: 'https://rickandmortyapi.com/graphql/',
 })
 
 const app = createApp({

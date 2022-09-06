@@ -12,8 +12,10 @@ const navItem: NavItem[] = [
 </script>
 <template>
   <div class="w-min-full">
-    <div class="bg-green-100 w-full px-10 py-5 flex justify-between">
-      <RouterLink :to="'/indexHome'" class="font-bold text-xl text-yellow-100"
+    <div
+      class="bg-green-100 w-full px-10 py-5 flex justify-between items-center shadow-md"
+    >
+      <RouterLink :to="'/indexHome'" class="font-bold text-2xl text-yellow-100"
         >bubu가계부</RouterLink
       >
       <ul class="flex space-x-10">
@@ -24,6 +26,8 @@ const navItem: NavItem[] = [
         </li>
       </ul>
     </div>
-    <RouterView />
+    <div class="p-10">
+      <RouterView />
+    </div>
   </div>
 </template>

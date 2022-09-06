@@ -14,6 +14,7 @@
     "@vue/apollo-option": "^4.0.0-alpha.20",
     "graphql": "^16.6.0",
     "graphql-tag": "^2.12.6",
+    "v-calendar": "^3.0.0-alpha.8",
     "vue": "^3.2.37",
     "vue-router": "^4.0.13"
   },
