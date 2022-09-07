@@ -7,7 +7,7 @@ import CalendarBase from '@/components/calendar/CalendarBase.vue'
     <div class="w-2/3">
       <CalendarBase />
     </div>
-    <div class="w-1/3 space-y-3">
+    <div class="w-1/3 space-y-3 pt-[3.1rem]">
       <RoundedRow>
         <template #title>
           <div class="font-semibold">8월의 총 지출:</div>
