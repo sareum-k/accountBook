@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import IconArrow from '@/components/icon/IconArrow.vue'
+import SmallRow from '@/components/row/smallRow.vue'
 
 export interface Week {
   name: string
@@ -15,72 +17,99 @@ const week: Week[] = [
   { name: 'SUN' },
 ]
 
+const props = withDefaults(
+  defineProps<{
+    thisMonth: Date
+    today: Date
+    dayWithdraw: number
+    dayDeposit: number
+  }>(),
+  {
+    dayWithdraw: 0,
+    dayDeposit: 0,
+  }
+)
+
 const calendar =
   'border rounded-6 border-green-100 text-center grid place-items-start p-2'
 
-const prevMonth: number[] = []
-const nowMonth: number[] = []
-const nextMonth: number[] = []
+const currentYear = ref<number>(props.thisMonth.getFullYear())
+const currentMonth = ref<number>(props.thisMonth.getMonth())
+const currentDate = ref<number>(props.thisMonth.getDate())
 
-// 한국 시간으로 지정해서 날짜 가져오기
-let date = new Date()
-let utc = date.getTime() + date.getTimezoneOffset() * 60 * 1000
-let kstGap = 9 * 60 * 60 * 1000
-let today = new Date(utc + kstGap)
+const prevMonth = ref<number[]>([])
+const nowMonth = ref<number[]>([])
+const nextMonth = ref<number[]>([])
 
-let currentYear = today.getFullYear()
-let currentMonth = today.getMonth()
+const changeMonth = ref<Date>(new Date())
 
-// 이전 달의 마지막 날 날짜와 요일 구하기
-let startDay = new Date(currentYear, currentMonth, 0)
-let prevDate = startDay.getDate()
-let prevDay = startDay.getDay()
+const rerenderCalendar = (thisMonth: Date) => {
+  currentYear.value = thisMonth.getFullYear()
+  currentMonth.value = thisMonth.getMonth()
+  currentDate.value = thisMonth.getDate()
 
-// 이번 달의 마지막 날 날짜와 요일 구하기
-let endDay = new Date(currentYear, currentMonth + 1, 0)
-let nextDate = endDay.getDate() // 30
-let nextDay = endDay.getDay() // 5
+  // 이전 달의 마지막 날 날짜와 요일 구하기
+  let startDay = new Date(currentYear.value, currentMonth.value, 0)
+  let prevDate = startDay.getDate()
+  let prevDay = startDay.getDay()
 
-// 지난달
-const getPrevMonth = () => {
-  for (let i = prevDate - prevDay + 1; i <= prevDate; i++) {
-    prevMonth.push(i)
+  // 이번 달의 마지막 날 날짜와 요일 구하기
+  let endDay = new Date(currentYear.value, currentMonth.value + 1, 0)
+  let nextDate = endDay.getDate() // 30
+  let nextDay = endDay.getDay() // 5
+
+  const getPrevMonth = () => {
+    prevMonth.value = []
+    for (let i = prevDate - prevDay + 1; i <= prevDate; i++) {
+      prevMonth.value.push(i)
+    }
   }
+  getPrevMonth()
+
+  const getCurrentMonth = () => {
+    nowMonth.value = []
+    for (let i = 1; i <= nextDate; i++) {
+      nowMonth.value.push(i)
+    }
+  }
+  getCurrentMonth()
+
+  const getNextMonth = () => {
+    nextMonth.value = []
+    for (let i = 1; i <= (7 - nextDay === 0 ? 0 : 7 - nextDay); i++) {
+      nextMonth.value.push(i)
+    }
+  }
+  getNextMonth()
 }
 
-getPrevMonth()
+rerenderCalendar(props.thisMonth)
 
-// 이번달
-const getCurrentMonth = () => {
-  for (let i = 1; i <= nextDate; i++) {
-    nowMonth.push(i)
-  }
+const movePrevMonth = () => {
+  changeMonth.value = new Date(currentYear.value, currentMonth.value - 1, 1)
+  rerenderCalendar(changeMonth.value)
 }
 
-getCurrentMonth()
-
-// 다음달
-const getNextMonth = () => {
-  for (let i = 1; i <= (7 - nextDay === 0 ? 0 : 7 - nextDay); i++) {
-    nextMonth.push(i)
-  }
+const moveNextMonth = () => {
+  changeMonth.value = new Date(currentYear.value, currentMonth.value + 1, 1)
+  rerenderCalendar(changeMonth.value)
 }
-
-getNextMonth()
 </script>
 <template>
   <div class="flex flex-col items-center space-y-5">
     <div class="flex space-x-8">
-      <button>
+      <button type="button" @click="movePrevMonth">
         <IconArrow />
       </button>
-      <div class="font-bold text-lg">2022년 8월</div>
+      <div class="font-bold text-lg w-28 text-center">
+        {{ currentYear }}년 {{ currentMonth + 1 }}월
+      </div>
       <button>
-        <IconArrow class="rotate-180" />
+        <IconArrow class="rotate-180" type="button" @click="moveNextMonth" />
       </button>
     </div>
     <div class="space-y-3 w-full">
-      <div class="grid grid-cols-7 auto-rows-[90px] gap-1">
+      <div class="grid grid-cols-7 auto-rows-[80px] gap-1">
         <div
           v-for="(day, index) in week"
           :key="index"
@@ -96,8 +125,18 @@ getNextMonth()
         >
           {{ day }}
         </div>
-        <div v-for="(day, index) in nowMonth" :key="index" :class="calendar">
+        <div
+          v-for="(day, index) in nowMonth"
+          :key="index"
+          class="border rounded-6 border-green-100 text-center grid place-items-start py-1 px-2"
+          :class="
+            today.getDate() === day && currentMonth === today.getMonth()
+              ? 'text-green-900 font-semibold'
+              : ''
+          "
+        >
           {{ day }}
+          <SmallRow :day-withdraw="dayWithdraw" :day-deposit="dayDeposit" />
         </div>
         <div
           v-for="(day, index) in nextMonth"
