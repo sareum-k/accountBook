@@ -1,13 +1,36 @@
 <script setup lang="ts">
+import LeftSidebar from './LeftSidebar.vue'
+
 export interface NavItem {
   name: string
   link: string
 }
 
+export interface SideItem extends NavItem {
+  linkName: string
+}
+
 const navItem: NavItem[] = [
-  { name: '🗓 캘린더', link: '/calendar/indexCalendar' },
+  { name: '🗓 캘린더', link: '/accountbook/indexCalendar' },
   { name: '💸 가계부', link: '/accountbook/indexaccountbook' },
   { name: '🏅 목표달성', link: '/goal/indexGoal' },
+]
+const sideItem: SideItem[] = [
+  {
+    name: '월간',
+    link: '/accountbook/indexCalendar',
+    linkName: 'accountBook-indexCalendar',
+  },
+  {
+    name: '주간',
+    link: '/accountbook/indexaccountbook',
+    linkName: 'accountBook-indexAccountBook',
+  },
+  {
+    name: '일간',
+    link: '/accountbook/indexaccountbook',
+    linkName: 'accountBook-indexAccountBook',
+  },
 ]
 </script>
 <template>
@@ -26,7 +49,8 @@ const navItem: NavItem[] = [
         </li>
       </ul>
     </div>
-    <div class="p-10">
+    <div class="grid grid-flow-col grid-cols-[7rem]">
+      <LeftSidebar :side-item="sideItem" />
       <RouterView />
     </div>
   </div>
