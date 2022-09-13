@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 
-import { SideItem } from '@/components/layout/HeaderNavbar.vue'
+import { NavItem } from '@/components/layout/HeaderNavbar.vue'
 
 withDefaults(
   defineProps<{
-    sideItem: SideItem[]
+    sideItem: NavItem[]
   }>(),
   {}
 )
@@ -19,7 +19,7 @@ const inactive = 'text-green-100'
     <li
       v-for="(menu, index) in sideItem"
       :key="index"
-      class="grid auto-rows-[15.2rem] place-items-center border border-yellow-500 text-lg"
+      class="grid auto-rows-[15.1rem] place-items-center border border-yellow-500 text-lg"
       :class="menu.linkName === route.name ? active : inactive"
     >
       <RouterLink :to="`${menu.link}`">
