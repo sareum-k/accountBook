@@ -3,14 +3,151 @@ import { ref } from 'vue'
 
 import IconArrow from '@/components/icon/IconArrow.vue'
 import MiddleRow from '@/components/row/MiddleRow.vue'
+import DoughnutChart from '@/components/chart/DoughnutChart.vue'
 
-export interface ListItem {
-  startDate: number
-  endDate: number
-  dayCount: number
-  weekDeposit: number | null
-  weekWithdraw: number | null
+export interface Selected {
+  name: string
+  value: string
 }
+
+export interface SelectedColor {
+  name: string
+  color: string
+}
+
+const chartData = {
+  total: 100,
+  data: [10, 20, 50],
+}
+const chartOptions = {
+  baseColor: '#E4F6E5',
+  colors: ['#41B883', '#E46651', '#00D8FF'],
+}
+
+const selectedValue = ref<string>('category')
+
+const selectedList: Selected[] = [
+  {
+    name: '카테고리',
+    value: 'category',
+  },
+  {
+    name: '결제방법',
+    value: 'payment',
+  },
+  {
+    name: '담당',
+    value: 'part',
+  },
+  {
+    name: '수입지출',
+    value: 'vs',
+  },
+]
+
+const category: SelectedColor[] = [
+  {
+    name: '식비',
+    color: '#b9fbc0',
+  },
+  {
+    name: '교통비',
+    color: '#98f5e1',
+  },
+  {
+    name: '문화생활',
+    color: '#8eecf5',
+  },
+  {
+    name: '생필품',
+    color: '#90dbf4',
+  },
+  {
+    name: '의류',
+    color: '#a3c4f3',
+  },
+  {
+    name: '미용',
+    color: '#ff97b7',
+  },
+  {
+    name: '의료/건강',
+    color: '#f1c0e8',
+  },
+  {
+    name: '교육',
+    color: '#ffcfd2',
+  },
+  {
+    name: '통신비',
+    color: '#fde4cf',
+  },
+  {
+    name: '회비',
+    color: '#fbf8cc',
+  },
+  {
+    name: '경조사',
+    color: '#cfbaf0',
+  },
+  {
+    name: '저축',
+    color: '#f4978e',
+  },
+  {
+    name: '가전',
+    color: '#72ddf7',
+  },
+  {
+    name: '공과금',
+    color: '#84dcc6',
+  },
+]
+
+const payment: SelectedColor[] = [
+  {
+    name: '신용카드',
+    color: '#70d6ff',
+  },
+  {
+    name: '체크카드',
+    color: '#ffd670',
+  },
+  {
+    name: '포인트',
+    color: '#ff9770',
+  },
+  {
+    name: '현금',
+    color: '#ff70a6',
+  },
+]
+
+const part: SelectedColor[] = [
+  {
+    name: '나',
+    color: '#ffa69e',
+  },
+  {
+    name: '남편',
+    color: '#93e1d8',
+  },
+  {
+    name: '공용',
+    color: '#f3d8c7',
+  },
+]
+
+const versus: SelectedColor[] = [
+  {
+    name: '지출',
+    color: '#bbefa9',
+  },
+  {
+    name: '수입',
+    color: '#ffa8d9',
+  },
+]
 
 const date = new Date()
 const utc = date.getTime() + date.getTimezoneOffset() * 60 * 1000
@@ -35,10 +172,8 @@ const moveNextMonth = () => {
   currentYear.value = thisMonth.value.getFullYear()
   currentMonth.value = thisMonth.value.getMonth()
   getWeekDate()
-  console.log(firstWeek.value)
 }
 
-/////////////////주간 날짜
 const firstWeek = ref<number[]>([])
 const secondWeek = ref<number[]>([])
 const thirdWeek = ref<number[]>([])
@@ -54,11 +189,9 @@ const getWeekDate = () => {
   fifthWeek.value = []
   sixthWeek.value = []
 
-  // 이전 달의 첫째 날 날짜와 요일 구하기
   let startDay = new Date(currentYear.value, currentMonth.value, 0)
   let prevDay = startDay.getDay()
 
-  // 이번 달의 마지막 날 날짜와 요일 구하기
   let endDay = new Date(currentYear.value, currentMonth.value + 1, 0)
   let nextDate = endDay.getDate() // 30
 
@@ -91,8 +224,8 @@ const getWeekDate = () => {
 getWeekDate()
 </script>
 <template>
-  <div class="flex justify-evenly">
-    <div class="w-1/2 space-y-4">
+  <div class="flex justify-evenly items-start">
+    <div class="w-1/2 space-y-5">
       <div class="flex items-center justify-between">
         <RouterLink :to="'/accountbook/create/indexCreate'">
           <button
@@ -156,6 +289,100 @@ getWeekDate()
         :week-deposit="0"
       />
     </div>
-    <div class="w-1/3">Chart</div>
+    <div class="w-1/3 flex flex-col justify-center items-center">
+      <select
+        v-model="selectedValue"
+        class="border border-green-900 rounded-6 px-2 py-1 text-sm w-full"
+        name="type"
+      >
+        <option
+          v-for="(item, index) in selectedList"
+          :key="index"
+          :value="item.value"
+        >
+          {{ item.name }}
+        </option>
+      </select>
+      <template v-if="selectedValue === 'category'">
+        <div class="flex flex-col items-center">
+          <div class="w-72">
+            <DoughnutChart :data="chartData" :options="chartOptions" />
+          </div>
+          <div class="grid grid-cols-4 w-ful gap-x-1 gap-y-2">
+            <div
+              v-for="(item, index) in category"
+              :key="index"
+              class="text-xs flex items-center"
+            >
+              <div
+                class="w-4 h-4 mr-1 rounded-10"
+                :style="{ background: item.color }"
+              ></div>
+              {{ item.name }} 28%
+            </div>
+          </div>
+        </div>
+      </template>
+      <template v-if="selectedValue === 'payment'">
+        <div class="flex flex-col items-center">
+          <div class="w-72">
+            <DoughnutChart :data="chartData" :options="chartOptions" />
+          </div>
+          <div class="grid grid-cols-4 w-ful gap-x-2 gap-y-2">
+            <div
+              v-for="(item, index) in payment"
+              :key="index"
+              class="text-xs flex items-center"
+            >
+              <div
+                class="w-4 h-4 mr-1 rounded-10"
+                :style="{ background: item.color }"
+              ></div>
+              {{ item.name }} 28%
+            </div>
+          </div>
+        </div>
+      </template>
+      <template v-if="selectedValue === 'part'">
+        <div class="flex flex-col items-center">
+          <div class="w-72">
+            <DoughnutChart :data="chartData" :options="chartOptions" />
+          </div>
+          <div class="grid grid-cols-3 w-ful gap-x-2 gap-y-2">
+            <div
+              v-for="(item, index) in part"
+              :key="index"
+              class="text-xs flex items-center"
+            >
+              <div
+                class="w-4 h-4 mr-1 rounded-10"
+                :style="{ background: item.color }"
+              ></div>
+              {{ item.name }} 28%
+            </div>
+          </div>
+        </div>
+      </template>
+      <template v-if="selectedValue === 'vs'">
+        <div class="flex flex-col items-center">
+          <div class="w-72">
+            <DoughnutChart :data="chartData" :options="chartOptions" />
+          </div>
+          <div class="grid grid-cols-2 w-ful gap-x-2 gap-y-2">
+            <div
+              v-for="(item, index) in versus"
+              :key="index"
+              class="text-xs flex items-center"
+            >
+              <div
+                class="w-4 h-4 mr-1 rounded-10"
+                :style="{ background: item.color }"
+              ></div>
+              {{ item.name }} 28%
+            </div>
+          </div>
+        </div>
+      </template>
+    </div>
   </div>
 </template>
