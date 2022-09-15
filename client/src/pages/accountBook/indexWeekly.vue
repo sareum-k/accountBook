@@ -15,16 +15,16 @@ export interface SelectedColor {
   color: string
 }
 
-const chartData = {
-  total: 100,
-  data: [10, 20, 50],
-}
-const chartOptions = {
-  baseColor: '#E4F6E5',
-  colors: ['#41B883', '#E46651', '#00D8FF'],
-}
-
 const selectedValue = ref<string>('category')
+const categoryColors = ref<string[]>([])
+const paymentColors = ref<string[]>([])
+const partColors = ref<string[]>([])
+const vsColors = ref<string[]>([])
+
+const chartData = {
+  total: 1000,
+  data: [10, 20, 50, 200, 350, 100, 200],
+}
 
 const selectedList: Selected[] = [
   {
@@ -148,6 +148,28 @@ const versus: SelectedColor[] = [
     color: '#ffa8d9',
   },
 ]
+
+const colorFilter = () => {
+  if (selectedValue.value === 'category') {
+    for (let i = 0; i < category.length; i++) {
+      categoryColors.value.push(category[i].color)
+    }
+  } else if (selectedValue.value === 'payment') {
+    for (let i = 0; i < payment.length; i++) {
+      paymentColors.value.push(payment[i].color)
+    }
+  } else if (selectedValue.value === 'part') {
+    for (let i = 0; i < part.length; i++) {
+      partColors.value.push(payment[i].color)
+    }
+  } else if (selectedValue.value === 'vs') {
+    for (let i = 0; i < versus.length; i++) {
+      vsColors.value.push(payment[i].color)
+    }
+  }
+}
+
+colorFilter()
 
 const date = new Date()
 const utc = date.getTime() + date.getTimezoneOffset() * 60 * 1000
@@ -294,6 +316,7 @@ getWeekDate()
         v-model="selectedValue"
         class="border border-green-900 rounded-6 px-2 py-1 text-sm w-full"
         name="type"
+        @change="colorFilter"
       >
         <option
           v-for="(item, index) in selectedList"
@@ -306,7 +329,11 @@ getWeekDate()
       <template v-if="selectedValue === 'category'">
         <div class="flex flex-col items-center">
           <div class="w-72">
-            <DoughnutChart :data="chartData" :options="chartOptions" />
+            <DoughnutChart
+              :data="chartData"
+              :base-color="'#E4F6E5'"
+              :colors="categoryColors"
+            />
           </div>
           <div class="grid grid-cols-4 w-ful gap-x-1 gap-y-2">
             <div
@@ -326,7 +353,11 @@ getWeekDate()
       <template v-if="selectedValue === 'payment'">
         <div class="flex flex-col items-center">
           <div class="w-72">
-            <DoughnutChart :data="chartData" :options="chartOptions" />
+            <DoughnutChart
+              :data="chartData"
+              :base-color="'#E4F6E5'"
+              :colors="paymentColors"
+            />
           </div>
           <div class="grid grid-cols-4 w-ful gap-x-2 gap-y-2">
             <div
@@ -346,7 +377,11 @@ getWeekDate()
       <template v-if="selectedValue === 'part'">
         <div class="flex flex-col items-center">
           <div class="w-72">
-            <DoughnutChart :data="chartData" :options="chartOptions" />
+            <DoughnutChart
+              :data="chartData"
+              :base-color="'#E4F6E5'"
+              :colors="partColors"
+            />
           </div>
           <div class="grid grid-cols-3 w-ful gap-x-2 gap-y-2">
             <div
@@ -366,7 +401,11 @@ getWeekDate()
       <template v-if="selectedValue === 'vs'">
         <div class="flex flex-col items-center">
           <div class="w-72">
-            <DoughnutChart :data="chartData" :options="chartOptions" />
+            <DoughnutChart
+              :data="chartData"
+              :base-color="'#E4F6E5'"
+              :colors="vsColors"
+            />
           </div>
           <div class="grid grid-cols-2 w-ful gap-x-2 gap-y-2">
             <div

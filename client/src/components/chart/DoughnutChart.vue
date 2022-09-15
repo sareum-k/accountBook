@@ -4,15 +4,11 @@ export interface DataSet {
   data: number[]
 }
 
-export interface DoughnutChartOption {
-  baseColor: string
-  colors: string[]
-}
-
 const props = withDefaults(
   defineProps<{
     data: DataSet | null
-    options: DoughnutChartOption | null
+    baseColor: string
+    colors: string[]
   }>(),
   {}
 )
@@ -31,7 +27,7 @@ const circles = (): {
 }[] => {
   const data = props.data?.data ?? []
   const total = props.data?.total ?? data.reduce((carry, d) => carry + d)
-  const colors = props.options?.colors ?? []
+  const colors = props.colors ?? []
   let beforeOffset = 0
   return data
     .map((data, dataIndex) => {
@@ -59,7 +55,7 @@ const circles = (): {
           cy="100"
           :r="radius"
           fill="none"
-          :stroke="props.options?.baseColor"
+          :stroke="props.baseColor"
           :stroke-width="35"
         />
         <circle
