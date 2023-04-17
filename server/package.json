@@ -11,7 +11,7 @@
    "dependencies": {
       "mysql2": "^2.3.3",
       "reflect-metadata": "^0.1.13",
-      "typeorm": "0.3.9"
+      "typeorm": "0.3.15"
    },
    "scripts": {
       "start": "ts-node src/index.ts",
